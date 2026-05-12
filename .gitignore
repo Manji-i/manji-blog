@@ -23,3 +23,21 @@ dist-ssr
 *.sln
 *.sw?
 .vite
+
+# SQLite 数据库（不要提交到 Git）
+api/database/blog.db
+api/database/blog.db-*
+deploy/blog/api/database/blog.db
+deploy/blog/api/database/blog.db-*
+
+# 部署包和临时目录
+deploy/
+dist.tar.gz
+*.tar.gz
+
+# 临时检查/修复脚本
+check-*.sh
+fix-*.sh
+
+# 测试文件
+test-marked.html
