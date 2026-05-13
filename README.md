@@ -1,57 +1,71 @@
-# React + TypeScript + Vite
+# Manji Blog
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+个人博客系统，支持文章发布、Markdown 编辑、图片上传、分类管理、关于页配置和移动端适配。
 
-Currently, two official plugins are available:
+## 技术栈
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **前端：** React 18 + TypeScript + Vite + Tailwind CSS
+- **后端：** Node.js + Express + SQLite
+- **部署：** Nginx + PM2
+- **仓库：** https://github.com/Manji-i/manji-blog
 
-## Expanding the ESLint configuration
+## 功能特性
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 前台：首页、文章列表、文章详情、关于页
+- 后台：登录、仪表盘、文章管理、分类管理、站点设置
+- 功能：Markdown 编辑、图片上传、文章摘要、移动端适配
+- 部署：一键部署脚本 `deploy.sh`，已绑定域名 manji.pro
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 开发
+
+```bash
+# 安装依赖
+npm install
+
+# 本地开发（前端 + 后端同时启动）
+npm run dev
+
+# 只启动前端
+npm run client:dev
+
+# 只启动后端
+npm run server:dev
+
+# 构建前端
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 后续提交并推送到 GitHub 的方法
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 日常开发提交
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+# 查看变更
+git status
+
+# 添加所有变更
+git add .
+
+# 提交（注意：要先更新版本修订.md）
+git commit -m "提交说明"
+
+# 推送到 GitHub
+git push
 ```
+
+### 版本发布（推荐）
+
+按照 `版本修订.md` 里的规范：
+
+1. 完成功能或修复后，执行 `npm run build` 验证
+2. 更新 `版本修订.md`，增加新版本记录
+3. 执行上述提交和推送命令
+4. 需要时可创建标签：`git tag v1.x.x`，然后 `git push --tags`
+
+## 部署
+
+部署相关说明请查看 `DEPLOY.md` 和 `deploy.sh`。
+
+## 版本记录
+
+详细版本记录请查看 `版本修订.md`。
