@@ -115,13 +115,18 @@ async function initDatabase() {
     }
   }
 
-  // Insert default admin user (password: sj2kv1t5)
-  // MD5 hash of "sj2kv1t5" is: f02562afb1bd3abbb3042055d986bbe9
-  const adminExists = await db.get('SELECT id FROM users WHERE email = ?', ['wangxun417@foxmail.com']);
+  // Insert default admin user (please change password after first login)
+  // Default password: admin123 (please change immediately after first login)
+  // MD5 hash of "admin123" is: 0192023a7bbd73250516f069df18b500
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  const adminName = process.env.ADMIN_NAME || 'Admin';
+  const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH || '0192023a7bbd73250516f069df18b500';
+  
+  const adminExists = await db.get('SELECT id FROM users WHERE email = ?', [adminEmail]);
   if (!adminExists) {
     await db.run(
       'INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)',
-      ['wangxun417@foxmail.com', 'f02562afb1bd3abbb3042055d986bbe9', '博主']
+      [adminEmail, adminPasswordHash, adminName]
     );
   }
 

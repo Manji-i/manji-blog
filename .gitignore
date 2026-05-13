@@ -24,6 +24,14 @@ dist-ssr
 *.sw?
 .vite
 
+# Environment variables (do not commit)
+.env
+.env.local
+.env.*.local
+
+# Local deployment script (do not commit)
+deploy.local.sh
+
 # SQLite 数据库（不要提交到 Git）
 api/database/blog.db
 api/database/blog.db-*

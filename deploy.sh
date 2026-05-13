@@ -1,12 +1,16 @@
 #!/bin/bash
 
 # 一键部署脚本
+# 使用前请先配置环境变量或修改下面的默认值
+# 建议复制此文件为 deploy.local.sh 并修改，然后部署本地脚本
+# deploy.local.sh 已在 .gitignore 中
+
 echo "🚀 开始部署到服务器..."
 
-# 服务器配置
-SERVER="root@14.103.45.4"
-REMOTE_DIR="/blog"
-LOCAL_DIR="/Users/bytedance/Documents/trae_projects"
+# 服务器配置（请根据实际情况修改）
+SERVER="${DEPLOY_SERVER:-user@your-server.com}"
+REMOTE_DIR="${DEPLOY_REMOTE_DIR:-/blog}"
+LOCAL_DIR="${DEPLOY_LOCAL_DIR:-$(pwd)}"
 
 echo ""
 echo "📦 1/4 - 构建项目..."
@@ -57,5 +61,4 @@ fi
 
 echo ""
 echo "🎉 部署完成！"
-echo "🌐 访问地址: http://manji.pro/"
-echo "🔗 备用地址: http://14.103.45.4/"
+echo "🌐 访问地址: http://your-domain.com/"
