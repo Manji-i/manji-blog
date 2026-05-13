@@ -1,5 +1,7 @@
 # Manji Blog
 
+> http://manji.pro/
+
 ### 通过 AI coding 搭建的个人博客
 > 支持文章发布、Markdown 编辑、图片上传、分类管理、关于页配置和移动端适配。
 
