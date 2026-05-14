@@ -1,8 +1,9 @@
 {
-  "name": "trae_projects",
+  "name": "manji-blog",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Manji's personal blog",
   "scripts": {
     "client:dev": "vite",
     "build": "tsc -b && vite build",
