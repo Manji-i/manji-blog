@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calendar, Eye, Clock, Terminal, MapPin, Briefcase, Mail, Github } from 'lucide-react';
-import { articlesApi } from '../lib/api';
+import { ArrowRight, Calendar, Eye, Clock, Terminal, MapPin, Briefcase, Mail, Github, MessageSquareQuote } from 'lucide-react';
+import { articlesApi, thoughtsApi } from '../lib/api';
 import { useSettingsStore } from '../store/settingsStore';
 
 interface Article {
@@ -16,16 +16,28 @@ interface Article {
   category_slug: string;
 }
 
+interface Thought {
+  id: number;
+  content: string;
+  image_url: string | null;
+  created_at: string;
+}
+
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [thoughts, setThoughts] = useState<Thought[]>([]);
   const [loading, setLoading] = useState(true);
   const { settings } = useSettingsStore();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const articlesRes = await articlesApi.getAll({ limit: 6 });
+        const [articlesRes, thoughtsRes] = await Promise.all([
+          articlesApi.getAll({ limit: 6 }),
+          thoughtsApi.getAll({ limit: 3 }),
+        ]);
         setArticles(articlesRes.data.data);
+        setThoughts(thoughtsRes.data.data);
       } catch (error) {
         console.error('Failed to fetch data:', error);
       } finally {
@@ -127,6 +139,47 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recent Thoughts */}
+      {thoughts.length > 0 && (
+        <section>
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--accent-purple)]/10">
+                <MessageSquareQuote className="h-4 w-4 text-[var(--accent-purple)]" />
+              </div>
+              <h2 className="text-xl font-semibold text-[var(--text-primary)]">最近随想</h2>
+            </div>
+            <Link
+              to="/thoughts"
+              className="flex shrink-0 items-center gap-1 text-sm text-[var(--accent-blue)] transition-colors hover:text-[var(--accent-cyan)]"
+            >
+              <span>查看全部</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {thoughts.map((thought) => (
+              <Link
+                key={thought.id}
+                to="/thoughts"
+                className="card flex h-full flex-col p-4 no-underline transition-colors hover:border-[var(--accent-purple)]/40 sm:p-5"
+              >
+                <p className="line-clamp-5 flex-1 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
+                  {thought.content}
+                </p>
+                <div className="mt-4 flex items-center gap-1 text-xs text-[var(--text-muted)]">
+                  <Calendar className="h-3 w-3" />
+                  <span>{formatDate(thought.created_at)}</span>
+                  {thought.image_url && (
+                    <span className="ml-auto text-[var(--text-muted)]">含图片</span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Latest Articles */}
       <section>

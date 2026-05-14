@@ -7,6 +7,7 @@ import articleRoutes from './routes/articles.js';
 import categoryRoutes from './routes/categories.js';
 import uploadRoutes from './routes/upload.js';
 import settingsRoutes from './routes/settings.js';
+import thoughtsRoutes from './routes/thoughts.js';
 import { getDb } from './database.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,7 @@ app.use('/api/articles', articleRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/thoughts', thoughtsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

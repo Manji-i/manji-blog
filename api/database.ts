@@ -90,6 +90,23 @@ async function initDatabase() {
     )
   `);
 
+  // Create thoughts table (随想)
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS thoughts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      content TEXT NOT NULL,
+      image_url VARCHAR(500),
+      user_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
+  await db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_thoughts_created_at ON thoughts(created_at DESC);
+  `);
+
   // Insert default settings
   const defaultSettings = [
     { key: 'site_name', value: 'DevBlog' },

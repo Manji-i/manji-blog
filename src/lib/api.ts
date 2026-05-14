@@ -93,3 +93,16 @@ export const settingsApi = {
   update: (data: Record<string, any>) => api.put('/settings', data),
   updateByKey: (key: string, value: any) => api.put(`/settings/${key}`, { value }),
 };
+
+// Thoughts API（随想）
+export const thoughtsApi = {
+  getAll: (params?: { page?: number; limit?: number }) =>
+    api.get('/thoughts', { params }),
+  getAdminList: (params?: { page?: number; limit?: number }) =>
+    api.get('/thoughts/admin/list', { params }),
+  create: (data: { content: string; image_url?: string }) =>
+    api.post('/thoughts', data),
+  update: (id: number, data: Partial<{ content: string; image_url: string | null }>) =>
+    api.put(`/thoughts/${id}`, data),
+  delete: (id: number) => api.delete(`/thoughts/${id}`),
+};

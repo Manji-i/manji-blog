@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, FolderOpen, Settings, LogOut, Terminal, ChevronRight, Home } from 'lucide-react';
+import { LayoutDashboard, FileText, FolderOpen, Settings, LogOut, Terminal, ChevronRight, Home, MessageSquareQuote } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 export default function AdminLayout() {
@@ -15,6 +15,7 @@ export default function AdminLayout() {
   const navItems = [
     { path: '/admin/dashboard', label: '仪表盘', icon: LayoutDashboard },
     { path: '/admin/articles', label: '文章管理', icon: FileText },
+    { path: '/admin/thoughts', label: '随想管理', icon: MessageSquareQuote },
     { path: '/admin/categories', label: '分类管理', icon: FolderOpen },
     { path: '/admin/settings', label: '网站设置', icon: Settings },
   ];

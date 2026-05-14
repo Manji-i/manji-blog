@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Terminal, BookOpen, FolderOpen, User, Github } from 'lucide-react';
+import { Terminal, BookOpen, FolderOpen, User, Github, MessageSquareQuote } from 'lucide-react';
 import { useSettingsStore } from '../store/settingsStore';
 
 export default function Layout() {
@@ -52,6 +52,17 @@ export default function Layout() {
               >
                 <FolderOpen className="h-4 w-4" />
                 <span>文章</span>
+              </Link>
+              <Link
+                to="/thoughts"
+                className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors sm:px-4 ${
+                  location.pathname.startsWith('/thoughts')
+                    ? 'bg-[var(--bg-tertiary)] text-[var(--accent-blue)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <MessageSquareQuote className="h-4 w-4" />
+                <span>随想</span>
               </Link>
               <Link
                 to="/about"
