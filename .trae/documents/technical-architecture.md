@@ -21,27 +21,33 @@ graph TD
 
 ## 2. 技术描述
 
-- **前端**: React@18 + TypeScript@5 + TailwindCSS@3 + Vite@5
-- **初始化工具**: vite-init
-- **后端**: Node.js@20 + Express@4
-- **数据库**: SQLite3（轻量级，无需额外服务）
-- **进程管理**: PM2
-- **反向代理**: Nginx
-- **文件存储**: 本地文件系统（/uploads目录）
+* **前端**: React\@18 + TypeScript\@5 + TailwindCSS\@3 + Vite\@5
+
+* **初始化工具**: vite-init
+
+* **后端**: Node.js\@20 + Express\@4
+
+* **数据库**: SQLite3（轻量级，无需额外服务）
+
+* **进程管理**: PM2
+
+* **反向代理**: Nginx
+
+* **文件存储**: 本地文件系统（/uploads目录）
 
 ## 3. 路由定义
 
-| 路由 | 用途 |
-|------|------|
-| / | 首页，展示最新文章和博客简介 |
-| /articles | 文章列表页，支持分类筛选和搜索 |
-| /articles/:slug | 文章详情页，展示完整文章内容 |
-| /admin/login | 后台登录页 |
-| /admin/dashboard | 后台仪表盘，数据统计概览 |
-| /admin/articles | 文章管理列表 |
-| /admin/articles/new | 新建文章页 |
-| /admin/articles/:id/edit | 编辑文章页 |
-| /admin/categories | 分类管理页 |
+| 路由                       | 用途              |
+| ------------------------ | --------------- |
+| /                        | 首页，展示最新文章和博客简介  |
+| /articles                | 文章列表页，支持分类筛选和搜索 |
+| /articles/:slug          | 文章详情页，展示完整文章内容  |
+| /admin/login             | 后台登录页           |
+| /admin/dashboard         | 后台仪表盘，数据统计概览    |
+| /admin/articles          | 文章管理列表          |
+| /admin/articles/new      | 新建文章页           |
+| /admin/articles/:id/edit | 编辑文章页           |
+| /admin/categories        | 分类管理页           |
 
 ## 4. API定义
 
@@ -50,40 +56,44 @@ graph TD
 **POST /api/auth/login**
 
 请求:
-| 参数名 | 参数类型 | 是否必填 | 说明 |
-|--------|----------|----------|------|
-| email | string | 是 | 博主邮箱 |
-| password | string | 是 | 密码（MD5加密） |
+
+| 参数名      | 参数类型   | 是否必填 | 说明        |
+| -------- | ------ | ---- | --------- |
+| email    | string | 是    | 博主邮箱      |
+| password | string | 是    | 密码（MD5加密） |
 
 响应:
-| 参数名 | 参数类型 | 说明 |
-|--------|----------|------|
-| success | boolean | 登录状态 |
-| token | string | JWT令牌 |
-| user | object | 用户信息 |
+
+| 参数名     | 参数类型    | 说明    |
+| ------- | ------- | ----- |
+| success | boolean | 登录状态  |
+| token   | string  | JWT令牌 |
+| user    | object  | 用户信息  |
 
 ### 4.2 文章相关
 
 **GET /api/articles**
 
 请求:
-| 参数名 | 参数类型 | 是否必填 | 说明 |
-|--------|----------|----------|------|
-| page | number | 否 | 页码，默认1 |
-| limit | number | 否 | 每页数量，默认10 |
-| category | string | 否 | 分类slug |
-| search | string | 否 | 搜索关键词 |
+
+| 参数名      | 参数类型   | 是否必填 | 说明        |
+| -------- | ------ | ---- | --------- |
+| page     | number | 否    | 页码，默认1    |
+| limit    | number | 否    | 每页数量，默认10 |
+| category | string | 否    | 分类slug    |
+| search   | string | 否    | 搜索关键词     |
 
 **POST /api/articles** (需要认证)
 
 请求:
-| 参数名 | 参数类型 | 是否必填 | 说明 |
-|--------|----------|----------|------|
-| title | string | 是 | 文章标题 |
-| content | string | 是 | 文章内容（HTML） |
-| category_id | number | 是 | 分类ID |
-| cover_image | string | 否 | 封面图路径 |
-| status | string | 是 | 状态：draft/published |
+
+| 参数名          | 参数类型   | 是否必填 | 说明                 |
+| ------------ | ------ | ---- | ------------------ |
+| title        | string | 是    | 文章标题               |
+| content      | string | 是    | 文章内容（HTML）         |
+| category\_id | number | 是    | 分类ID               |
+| cover\_image | string | 否    | 封面图路径              |
+| status       | string | 是    | 状态：draft/published |
 
 **PUT /api/articles/:id** (需要认证)
 
@@ -94,15 +104,17 @@ graph TD
 **POST /api/upload** (需要认证)
 
 请求: multipart/form-data
-| 参数名 | 参数类型 | 是否必填 | 说明 |
-|--------|----------|----------|------|
-| file | File | 是 | 图片文件 |
+
+| 参数名  | 参数类型 | 是否必填 | 说明   |
+| ---- | ---- | ---- | ---- |
+| file | File | 是    | 图片文件 |
 
 响应:
-| 参数名 | 参数类型 | 说明 |
-|--------|----------|------|
-| success | boolean | 上传状态 |
-| url | string | 图片访问URL |
+
+| 参数名     | 参数类型    | 说明      |
+| ------- | ------- | ------- |
+| success | boolean | 上传状态    |
+| url     | string  | 图片访问URL |
 
 ## 5. 服务器架构图
 
@@ -168,6 +180,7 @@ erDiagram
 ### 6.2 数据定义语言
 
 **用户表 (users)**
+
 ```sql
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -183,6 +196,7 @@ VALUES ('admin@blog.com', '0192023a7bbd73250516f069df18b500', '博主');
 ```
 
 **分类表 (categories)**
+
 ```sql
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -201,6 +215,7 @@ INSERT INTO categories (name, slug, description, sort_order) VALUES
 ```
 
 **文章表 (articles)**
+
 ```sql
 CREATE TABLE articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -227,6 +242,7 @@ CREATE INDEX idx_articles_created_at ON articles(created_at DESC);
 ## 7. 部署架构
 
 ### 7.1 目录结构
+
 ```
 /blog/
 ├── client/              # React前端
@@ -241,6 +257,7 @@ CREATE INDEX idx_articles_created_at ON articles(created_at DESC);
 ```
 
 ### 7.2 Nginx配置
+
 ```nginx
 server {
     listen 80;
@@ -267,6 +284,7 @@ server {
 ```
 
 ### 7.3 PM2配置
+
 ```javascript
 module.exports = {
   apps: [{
@@ -288,9 +306,11 @@ module.exports = {
 ## 8. 域名和SSL配置
 
 ### 8.1 域名解析
-- 在域名服务商处添加A记录，指向火山云ECS公网IP
+
+* 在域名服务商处添加A记录，指向火山云ECS公网IP
 
 ### 8.2 SSL证书（使用Certbot免费证书）
+
 ```bash
 # 安装Certbot
 sudo apt install certbot python3-certbot-nginx
@@ -305,6 +325,7 @@ sudo certbot renew --dry-run
 ## 9. 依赖清单
 
 ### 前端依赖
+
 ```json
 {
   "dependencies": {
@@ -328,6 +349,7 @@ sudo certbot renew --dry-run
 ```
 
 ### 后端依赖
+
 ```json
 {
   "dependencies": {
@@ -341,3 +363,4 @@ sudo certbot renew --dry-run
   }
 }
 ```
+
