@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MessageSquareQuote, Send, Image, Trash2, Edit2, X, Calendar } from 'lucide-react';
 import { thoughtsApi, uploadApi } from '../../lib/api';
+import { formatZhDateTime } from '../../lib/date';
 
 interface Thought {
   id: number;
@@ -104,16 +105,6 @@ export default function AdminThoughts() {
       console.error('Failed to delete thought:', error);
       alert('删除失败');
     }
-  };
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (
@@ -222,7 +213,7 @@ export default function AdminThoughts() {
               <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-muted)]">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {formatDate(thought.created_at)}
+                  {formatZhDateTime(thought.created_at)}
                 </span>
                 <div className="flex items-center gap-2">
                   <button

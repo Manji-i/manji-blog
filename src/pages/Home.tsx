@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Eye, Clock, Terminal, MapPin, Briefcase, Mail, Github, MessageSquareQuote } from 'lucide-react';
 import { articlesApi, thoughtsApi } from '../lib/api';
+import { formatZhDate } from '../lib/date';
 import { useSettingsStore } from '../store/settingsStore';
 
 interface Article {
@@ -46,14 +47,6 @@ export default function Home() {
     };
     fetchData();
   }, []);
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   return (
     <div className="space-y-8 sm:space-y-12">
@@ -170,7 +163,7 @@ export default function Home() {
                 </p>
                 <div className="mt-4 flex items-center gap-1 text-xs text-[var(--text-muted)]">
                   <Calendar className="h-3 w-3" />
-                  <span>{formatDate(thought.created_at)}</span>
+                  <span>{formatZhDate(thought.created_at)}</span>
                   {thought.image_url && (
                     <span className="ml-auto text-[var(--text-muted)]">含图片</span>
                   )}
@@ -231,7 +224,7 @@ export default function Home() {
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-[var(--text-muted)]">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
-                      {formatDate(article.published_at || article.created_at)}
+                      {formatZhDate(article.published_at || article.created_at)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Eye className="h-3 w-3" />

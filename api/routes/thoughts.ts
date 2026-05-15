@@ -83,9 +83,10 @@ router.post('/', authMiddleware, async (req: AuthRequest, res) => {
       return;
     }
 
+    const now = new Date().toISOString();
     const result = await db.run(
-      `INSERT INTO thoughts (content, image_url, user_id) VALUES (?, ?, ?)`,
-      [content.trim(), image_url || null, req.user!.id]
+      `INSERT INTO thoughts (content, image_url, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
+      [content.trim(), image_url || null, req.user!.id, now, now]
     );
 
     res.json({

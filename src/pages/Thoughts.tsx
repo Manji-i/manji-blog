@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MessageSquareQuote, Calendar } from 'lucide-react';
 import { thoughtsApi } from '../lib/api';
+import { formatZhDateTime } from '../lib/date';
 
 interface Thought {
   id: number;
@@ -27,17 +28,6 @@ export default function Thoughts() {
     };
     fetch();
   }, []);
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -86,7 +76,7 @@ export default function Thoughts() {
               )}
               <div className="mt-4 flex items-center gap-2 text-xs text-[var(--text-muted)]">
                 <Calendar className="h-3 w-3" />
-                <span>{formatDate(thought.created_at)}</span>
+                <span>{formatZhDateTime(thought.created_at)}</span>
               </div>
             </article>
           ))}
