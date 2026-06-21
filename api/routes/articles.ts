@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
       params.push(`%${search}%`, `%${search}%`);
     }
 
-    query += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
+    query += ` ORDER BY COALESCE(a.published_at, a.created_at) DESC LIMIT ? OFFSET ?`;
     params.push(Number(limit), offset);
 
     const articles = await db.all(query, params);
@@ -128,7 +128,7 @@ router.get('/admin/list', authMiddleware, async (req: AuthRequest, res) => {
       params.push(status as string);
     }
 
-    query += ` ORDER BY a.created_at DESC LIMIT ? OFFSET ?`;
+    query += ` ORDER BY COALESCE(a.published_at, a.created_at) DESC LIMIT ? OFFSET ?`;
     params.push(Number(limit), offset);
 
     const articles = await db.all(query, params);
