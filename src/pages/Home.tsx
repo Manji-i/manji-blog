@@ -54,82 +54,95 @@ export default function Home() {
       {/* Hero Section - Personal Profile Summary */}
       <section className="relative overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-5 sm:p-8 md:p-12">
         <div className="absolute inset-0 grid-bg opacity-50" />
-        <div className="relative">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--accent-green)]/30 bg-[var(--accent-green)]/10 px-3 py-1 text-xs text-[var(--accent-green)]">
-            <span className="status-dot status-online" />
-            <span>Online</span>
-          </div>
-          
-          <h1 className="mb-4 break-words text-2xl font-bold leading-tight sm:text-3xl md:text-5xl">
-            <span className="text-[var(--text-primary)]">{'<'}</span>
-            <span className="gradient-text">{settings.author_name}</span>
-            <span className="text-[var(--text-primary)]">{' />'}</span>
-          </h1>
-          
-          <p className="mb-6 max-w-2xl text-base text-[var(--text-secondary)] sm:text-lg">
-            {settings.site_description}
-          </p>
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center">
+          <div>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--accent-green)]/30 bg-[var(--accent-green)]/10 px-3 py-1 text-xs text-[var(--accent-green)]">
+              <span className="status-dot status-online" />
+              <span>Online</span>
+            </div>
+            
+            <h1 className="mb-4 break-words text-2xl font-bold leading-tight sm:text-3xl md:text-5xl">
+              <span className="text-[var(--text-primary)]">{'<'}</span>
+              <span className="gradient-text">{settings.author_name}</span>
+              <span className="text-[var(--text-primary)]">{' />'}</span>
+            </h1>
+            
+            <p className="mb-6 max-w-2xl text-base text-[var(--text-secondary)] sm:text-lg">
+              {settings.site_description}
+            </p>
 
-          {/* Personal Info Grid */}
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
-                <MapPin className="h-4 w-4 text-[var(--accent-blue)]" />
-              </div>
-              <span className="min-w-0 break-words text-sm">{settings.author_location}</span>
-            </div>
-            <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
-                <Briefcase className="h-4 w-4 text-[var(--accent-purple)]" />
-              </div>
-              <span className="min-w-0 break-words text-sm">{settings.author_company}</span>
-            </div>
-            <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
-                <Mail className="h-4 w-4 text-[var(--accent-green)]" />
-              </div>
-              <a href={`mailto:${settings.author_email}`} className="min-w-0 break-all text-sm hover:text-[var(--accent-blue)]">
-                {settings.author_email}
+            {/* Social Links */}
+            <div className="mb-8 flex flex-wrap gap-3">
+              <a
+                href={`mailto:${settings.author_email}`}
+                className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-4 py-2 text-sm text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
+              >
+                <Mail className="h-4 w-4" />
+                <span>Email</span>
+              </a>
+              <a
+                href={settings.author_github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-4 py-2 text-sm text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
+              >
+                <Github className="h-4 w-4" />
+                <span>GitHub</span>
               </a>
             </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+              <Link
+                to="/articles"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--accent-blue)] px-6 py-3 text-sm font-medium text-white transition-all hover:bg-[var(--accent-blue)]/90"
+              >
+                <span>浏览文章</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/about"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
+              >
+                <Terminal className="h-4 w-4" />
+                <span>关于我</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Social Links */}
-          <div className="mb-8 flex flex-wrap gap-3">
-            <a
-              href={`mailto:${settings.author_email}`}
-              className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-4 py-2 text-sm text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
-            >
-              <Mail className="h-4 w-4" />
-              <span>Email</span>
-            </a>
-            <a
-              href={settings.author_github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-4 py-2 text-sm text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
-            >
-              <Github className="h-4 w-4" />
-              <span>GitHub</span>
-            </a>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
-            <Link
-              to="/articles"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--accent-blue)] px-6 py-3 text-sm font-medium text-white transition-all hover:bg-[var(--accent-blue)]/90"
-            >
-              <span>浏览文章</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/about"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-all hover:bg-[var(--bg-hover)]"
-            >
-              <Terminal className="h-4 w-4" />
-              <span>关于我</span>
-            </Link>
+          {/* Personal Info Card */}
+          <div className="hero-profile-card rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)]/55 p-4 backdrop-blur-sm sm:p-5">
+            <div className="space-y-4">
+              <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
+                  <MapPin className="h-4 w-4 text-[var(--accent-blue)]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-[var(--text-primary)]">位置</div>
+                  <div className="break-words text-sm">{settings.author_location}</div>
+                </div>
+              </div>
+              <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
+                  <Briefcase className="h-4 w-4 text-[var(--accent-purple)]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-[var(--text-primary)]">公司</div>
+                  <div className="break-words text-sm">{settings.author_company}</div>
+                </div>
+              </div>
+              <div className="flex min-w-0 items-center gap-3 text-[var(--text-secondary)]">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-tertiary)]">
+                  <Mail className="h-4 w-4 text-[var(--accent-green)]" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-[var(--text-primary)]">邮箱</div>
+                  <a href={`mailto:${settings.author_email}`} className="break-all text-sm text-[var(--accent-blue)] hover:text-[var(--accent-cyan)]">
+                    {settings.author_email}
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
