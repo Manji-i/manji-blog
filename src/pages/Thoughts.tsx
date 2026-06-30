@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MessageSquareQuote, Calendar } from 'lucide-react';
 import { thoughtsApi } from '../lib/api';
 import { formatZhDateTime } from '../lib/date';
+import { ThoughtMarkdown } from '../components/ThoughtMarkdown';
 
 interface Thought {
   id: number;
@@ -61,9 +62,7 @@ export default function Thoughts() {
               key={thought.id}
               className="card overflow-hidden p-5 sm:p-6"
             >
-              <p className="whitespace-pre-wrap text-base leading-relaxed text-[var(--text-primary)]">
-                {thought.content}
-              </p>
+              <ThoughtMarkdown content={thought.content} />
               {thought.image_url && (
                 <div className="mt-4 overflow-hidden rounded-lg border border-[var(--border-color)]">
                   <img

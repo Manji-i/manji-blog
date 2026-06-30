@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { MessageSquareQuote, Send, Image, Trash2, Edit2, X, Calendar } from 'lucide-react';
+import { MessageSquareQuote, Send, Image, Trash2, Edit2, X, Calendar, Eye } from 'lucide-react';
 import { thoughtsApi, uploadApi } from '../../lib/api';
 import { formatZhDateTime } from '../../lib/date';
+import { ThoughtMarkdown } from '../../components/ThoughtMarkdown';
 
 interface Thought {
   id: number;
@@ -134,12 +135,22 @@ export default function AdminThoughts() {
           )}
         </div>
         <textarea
-          placeholder="一句话、一个想法、一段感悟..."
+          placeholder="一句话、一个想法、一段感悟... 支持 Markdown"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows={4}
+          rows={6}
           className="w-full resize-none text-sm leading-relaxed"
         />
+
+        {content.trim() && (
+          <div className="mt-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] p-3">
+            <div className="mb-2 flex items-center gap-2 text-xs font-medium text-[var(--text-muted)]">
+              <Eye className="h-3 w-3" />
+              <span>预览</span>
+            </div>
+            <ThoughtMarkdown content={content} />
+          </div>
+        )}
 
         {imageUrl && (
           <div className="relative mt-3 inline-block">
@@ -197,9 +208,7 @@ export default function AdminThoughts() {
         ) : (
           thoughts.map((thought) => (
             <article key={thought.id} className="card p-4 sm:p-5">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
-                {thought.content}
-              </p>
+              <ThoughtMarkdown content={thought.content} />
               {thought.image_url && (
                 <div className="mt-3 overflow-hidden rounded-lg border border-[var(--border-color)]">
                   <img

@@ -4,6 +4,7 @@ import { ArrowRight, Calendar, Eye, Clock, Terminal, MapPin, Briefcase, Mail, Gi
 import { articlesApi, thoughtsApi } from '../lib/api';
 import { formatZhDate } from '../lib/date';
 import { useSettingsStore } from '../store/settingsStore';
+import { ThoughtMarkdown } from '../components/ThoughtMarkdown';
 
 interface Article {
   id: number;
@@ -158,9 +159,11 @@ export default function Home() {
                 to="/thoughts"
                 className="card flex h-full flex-col p-4 no-underline transition-colors hover:border-[var(--accent-purple)]/40 sm:p-5"
               >
-                <p className="line-clamp-5 flex-1 whitespace-pre-wrap text-sm leading-relaxed text-[var(--text-primary)]">
-                  {thought.content}
-                </p>
+                <ThoughtMarkdown
+                  content={thought.content}
+                  compact
+                  className="flex-1 text-[var(--text-primary)]"
+                />
                 <div className="mt-4 flex items-center gap-1 text-xs text-[var(--text-muted)]">
                   <Calendar className="h-3 w-3" />
                   <span>{formatZhDate(thought.created_at)}</span>

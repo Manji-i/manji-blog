@@ -610,3 +610,97 @@ input::placeholder, textarea::placeholder {
     aspect-ratio: 4 / 3;
   }
 }
+
+/* Thought Markdown: compact reading surface for short-form notes */
+.thought-markdown {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.thought-markdown > :first-child {
+  margin-top: 0;
+}
+
+.thought-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.thought-markdown h1 {
+  font-size: 1.3em;
+  margin-bottom: 0.5em;
+}
+
+.thought-markdown h2 {
+  font-size: 1.18em;
+  margin-top: 1.1em;
+  margin-bottom: 0.45em;
+}
+
+.thought-markdown h3,
+.thought-markdown h4,
+.thought-markdown h5,
+.thought-markdown h6 {
+  font-size: 1.05em;
+  margin-top: 1em;
+  margin-bottom: 0.35em;
+}
+
+.thought-markdown p {
+  margin-bottom: 0.85em;
+}
+
+.thought-markdown ul,
+.thought-markdown ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.85em;
+}
+
+.thought-markdown pre {
+  margin-top: 0.75em;
+  margin-bottom: 1em;
+  border-radius: 8px;
+}
+
+.thought-markdown img {
+  max-height: 480px;
+  object-fit: contain;
+}
+
+.thought-markdown--compact {
+  max-height: 8.75rem;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.thought-markdown--compact h1,
+.thought-markdown--compact h2,
+.thought-markdown--compact h3,
+.thought-markdown--compact h4,
+.thought-markdown--compact h5,
+.thought-markdown--compact h6 {
+  font-family: inherit;
+  font-size: 1em;
+  margin-top: 0;
+  margin-bottom: 0.35em;
+}
+
+.thought-markdown--compact p,
+.thought-markdown--compact li {
+  line-height: 1.65;
+}
+
+.thought-markdown--compact ul,
+.thought-markdown--compact ol {
+  margin-left: 1.2em;
+  margin-top: 0.35em;
+  margin-bottom: 0.6em;
+}
+
+.thought-markdown--compact pre,
+.thought-markdown--compact blockquote,
+.thought-markdown--compact img,
+.thought-markdown--compact table {
+  margin-top: 0.5em;
+  margin-bottom: 0.6em;
+}
