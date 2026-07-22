@@ -1,4 +1,6 @@
-# 博客系统手动部署指南
+# Manji Blog 首次部署 / 灾备恢复指南
+
+> 日常上线不要使用本文档。日常上线只执行 `bash deploy.local.sh`，见 [DEPLOY.md](./DEPLOY.md)。本文档用于新服务器初始化、灾备恢复或完全迁移。
 
 ## 一、准备工作
 
@@ -18,7 +20,7 @@ cp -r api deploy/blog/
 cp -r dist deploy/blog/
 cp package.json deploy/blog/
 cp package-lock.json deploy/blog/
-cp ecosystem.config.js deploy/blog/
+cp ecosystem.config.cjs deploy/blog/
 cp nginx.conf deploy/blog/
 cp DEPLOY.md deploy/blog/
 
@@ -42,7 +44,7 @@ blog/
 ├── dist/                   # 前端构建产物
 ├── package.json            # 依赖配置
 ├── package-lock.json       # 锁定依赖版本
-├── ecosystem.config.js     # PM2 配置
+├── ecosystem.config.cjs    # PM2 配置
 └── nginx.conf              # Nginx 配置
 ```
 
@@ -101,12 +103,12 @@ sudo apt install -y certbot python3-certbot-nginx
 
 ## 三、上传项目文件
 
-### 方法 1：使用 SCP 命令
+### 方法 1：使用部署包
 
 在本地终端执行：
 
 ```bash
-# 上传部署包到服务器
+# 上传部署包到服务器。灾备恢复时可用 scp；日常上线不要走这条路径
 scp deploy/blog.tar.gz root@你的服务器IP:/root/
 
 # 连接服务器解压
@@ -140,7 +142,7 @@ cd /blog
 ### 3. 安装依赖
 
 ```bash
-npm install --production
+npm install
 ```
 
 ### 4. 创建必要目录
@@ -159,7 +161,7 @@ nano /blog/.env
 添加内容：
 ```
 NODE_ENV=production
-PORT=3000
+PORT=3001
 JWT_SECRET=你的随机密钥（建议修改）
 ```
 
@@ -171,7 +173,7 @@ JWT_SECRET=你的随机密钥（建议修改）
 
 ```bash
 cd /blog
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 
 # 查看状态
 pm2 status
@@ -184,7 +186,7 @@ pm2 startup
 ### 2. 测试后端是否运行
 
 ```bash
-curl http://localhost:3000/api/health
+curl http://localhost:3001/api/health
 
 # 应返回：{"success":true,"message":"Server is running"}
 ```
@@ -300,8 +302,8 @@ sudo ufw status
 ### 2. 测试管理员登录
 
 - 访问：`https://你的域名/admin/login`
-- 邮箱：`wangxun417@foxmail.com`
-- 密码：`sj2kv1t5`
+- 使用部署时单独创建或恢复的管理员账号登录。
+- 生产环境没有公开默认账号或默认密码；不要把凭据写进仓库、部署包或本文档。
 
 ### 3. 测试网站设置
 
@@ -326,19 +328,10 @@ pm2 restart blog-server
 
 ### 更新代码后重新部署
 
+日常上线不要在服务器里 `git pull` 或手动覆盖文件。回到本地项目根目录执行：
+
 ```bash
-cd /blog
-# 上传新代码
-git pull  # 或手动上传
-
-# 重新安装依赖
-npm install
-
-# 重新构建前端
-npm run build
-
-# 重启服务
-pm2 restart blog-server
+bash deploy.local.sh
 ```
 
 ### 备份数据
@@ -362,7 +355,7 @@ rsync -avz /blog/api/uploads/ /backup/uploads/
 pm2 logs blog-server
 
 # 检查端口占用
-sudo netstat -tlnp | grep 3000
+sudo ss -tlnp | grep 3001
 
 # 手动测试启动
 cd /blog
@@ -386,7 +379,7 @@ ls -la /blog/dist/
 
 ```bash
 # 测试 API
-curl http://localhost:3000/api/health
+curl http://localhost:3001/api/health
 
 # 检查后端日志
 pm2 logs blog-server
@@ -407,11 +400,12 @@ chmod 755 /blog/api/database/
 
 ## 十二、安全建议
 
-1. **修改 JWT 密钥**：编辑 `ecosystem.config.js`，将 `JWT_SECRET` 改为随机字符串
-2. **定期备份**：设置定时任务自动备份数据库
-3. **更新系统**：定期运行 `sudo apt update && sudo apt upgrade`
-4. **监控日志**：使用 `pm2 logs` 定期查看应用日志
-5. **防火墙**：只开放必要端口（80、443、22）
+1. **使用独立 JWT 密钥**：生产密钥通过受控环境配置注入，不写入 Git
+2. **禁止默认管理员**：管理员必须显式创建，登录页不展示任何账号密码
+3. **定期备份**：设置定时任务自动备份数据库
+4. **更新系统**：定期运行 `sudo apt update && sudo apt upgrade`
+5. **监控日志**：使用 `pm2 logs` 定期查看应用日志
+6. **防火墙**：只开放必要端口（80、443、22）
 
 ---
 

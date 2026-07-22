@@ -1,178 +1,165 @@
-# 博客系统部署指南
+# Manji Blog 部署与运维手册
 
-## 火山云ECS服务器部署步骤
+本文档记录当前线上环境的真实部署方式。首次迁移或灾备恢复见 [DEPLOY_MANUAL.md](./DEPLOY_MANUAL.md)。
 
-### 1. 服务器环境准备
+## 当前线上环境
+
+- 线上地址：https://manji.pro/
+- 备用地址：http://14.103.45.4/
+- 服务器：`root@14.103.45.4`
+- 部署目录：`/blog`
+- 前端目录：`/blog/dist`
+- 后端目录：`/blog/api`
+- 数据库：`/blog/api/database/blog.db`
+- 上传目录：`/blog/api/uploads`
+- PM2 进程：`blog-server`
+- 后端端口：`3001`
+- Nginx：监听 80/443，HTTP 自动跳转 HTTPS，代理 `/api` 到 `http://localhost:3001`
+
+## 日常上线
+
+在本机项目根目录执行：
 
 ```bash
-# 更新系统
-sudo apt update && sudo apt upgrade -y
-
-# 安装 Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-
-# 安装 PM2
-sudo npm install -g pm2 tsx
-
-# 安装 Nginx
-sudo apt install -y nginx
-
-# 安装 Certbot (用于SSL证书)
-sudo apt install -y certbot python3-certbot-nginx
+bash deploy.local.sh
 ```
 
-### 2. 项目部署
+脚本会执行：
+
+1. `npm run build`
+2. `rsync --delete dist/` 到 `/blog/dist/`
+3. `rsync api/` 到 `/blog/api/`
+4. 同步 `ecosystem.config.cjs` 和 `nginx.conf`
+5. 远端执行 `nginx -t && nginx -s reload`
+6. 远端执行 `pm2 restart blog-server`
+
+后端同步会排除：
+
+```text
+api/database/
+api/uploads/
+```
+
+这两个目录保存线上数据，不能被本地文件覆盖。
+
+## 不要使用的旧流程
+
+- 不要用逐文件 `scp` 清单部署后端；新增路由或中间件时容易漏传。
+- 不要把 `/blog/api/database/blog.db` 从本地覆盖到线上。
+- 不要把 `/blog/api/uploads/` 从本地覆盖到线上。
+- 不要把 `deploy.sh` 当作当前真实生产部署脚本；它只是公开模板。
+
+## 上线前检查
 
 ```bash
-# 创建项目目录
-sudo mkdir -p /blog
-sudo chown -R $USER:$USER /blog
-
-# 克隆或上传项目代码到 /blog 目录
-cd /blog
-
-# 安装依赖
-npm install
-
-# 创建必要目录
-mkdir -p api/uploads api/database logs
-
-# 构建前端
+git status --short --branch
+npm test
+npm run check
 npm run build
-
-# 使用 PM2 启动后端
-pm2 start ecosystem.config.js
-
-# 保存 PM2 配置
-pm2 save
-pm2 startup
 ```
 
-### 3. Nginx 配置
+每次上线都要同步更新 [版本修订.md](./版本修订.md)。提交前只暂存本次变更文件，不使用 `git add .`。
+
+## 上线后验证
 
 ```bash
-# 复制配置文件
-sudo cp nginx.conf /etc/nginx/sites-available/blog
-
-# 编辑配置文件，替换 your-domain.com 为你的域名
-sudo nano /etc/nginx/sites-available/blog
-
-# 创建软链接
-sudo ln -s /etc/nginx/sites-available/blog /etc/nginx/sites-enabled/
-
-# 删除默认配置
-sudo rm /etc/nginx/sites-enabled/default
-
-# 测试配置
-sudo nginx -t
-
-# 重启 Nginx
-sudo systemctl restart nginx
+curl https://manji.pro/api/health
+curl -I https://manji.pro/
+ssh root@14.103.45.4 "pm2 status"
 ```
 
-### 4. SSL 证书配置
+预期：
+
+- `/api/health` 返回 `{"success":true,"message":"Server is running"}`
+- 首页 HTML 引用最新构建产物
+- `blog-server` 状态为 `online`
+
+## 常用服务器命令
 
 ```bash
-# 申请证书 (替换 your-domain.com 为你的域名)
-sudo certbot --nginx -d your-domain.com
+# 服务状态
+ssh root@14.103.45.4 "pm2 status"
 
-# 自动续期测试
-sudo certbot renew --dry-run
+# 服务日志
+ssh root@14.103.45.4 "pm2 logs blog-server --lines 100"
+
+# 重启后端
+ssh root@14.103.45.4 "pm2 restart blog-server"
+
+# 检查 Nginx
+ssh root@14.103.45.4 "nginx -t"
+
+# 重载 Nginx
+ssh root@14.103.45.4 "nginx -s reload"
 ```
 
-### 5. 更新 Nginx 配置启用 SSL
+## HTTPS 证书
 
-编辑 `/etc/nginx/sites-available/blog`，取消 SSL 相关配置的注释：
-
-```nginx
-ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-```
-
-然后重启 Nginx：
+- 证书覆盖：`manji.pro`、`www.manji.pro`
+- 证书目录：`/etc/letsencrypt/live/manji.pro/`
+- 自动续期：`certbot.timer`
 
 ```bash
-sudo systemctl restart nginx
+ssh root@14.103.45.4 "systemctl status certbot.timer"
+ssh root@14.103.45.4 "certbot renew --dry-run"
 ```
 
-### 6. 防火墙配置
+## 数据操作
+
+SQLite 数据库在服务器：
+
+```text
+/blog/api/database/blog.db
+```
+
+只改文章/随想日期等数据时，可以直接执行 SQL，不需要重启 PM2。
+
+示例：
 
 ```bash
-# 允许 HTTP 和 HTTPS
-sudo ufw allow 'Nginx Full'
-
-# 允许 SSH
-sudo ufw allow OpenSSH
-
-# 启用防火墙
-sudo ufw enable
+ssh root@14.103.45.4 "sqlite3 /blog/api/database/blog.db \"SELECT id,title,published_at FROM articles ORDER BY COALESCE(published_at, created_at) DESC LIMIT 10;\""
 ```
 
-### 7. 日常维护命令
+字段口径：
+
+- 文章公开日期和排序优先看 `articles.published_at`，缺失时回退 `articles.created_at`
+- 随想日期看 `thoughts.created_at`
+
+## 备份建议
 
 ```bash
-# 查看应用状态
-pm2 status
-
-# 查看日志
-pm2 logs blog-server
-
-# 重启应用
-pm2 restart blog-server
-
-# 更新代码后重新构建
-cd /blog
-git pull
-npm install
-npm run build
-pm2 restart blog-server
-
-# 备份数据库
-cp /blog/api/database/blog.db /backup/blog-$(date +%Y%m%d).db
-
-# 备份上传文件
-rsync -avz /blog/api/uploads/ /backup/uploads/
+ssh root@14.103.45.4 "mkdir -p /backup/blog"
+ssh root@14.103.45.4 "cp /blog/api/database/blog.db /backup/blog/blog-\$(date +%Y%m%d-%H%M%S).db"
+ssh root@14.103.45.4 "rsync -a /blog/api/uploads/ /backup/blog/uploads/"
 ```
 
-### 8. 目录结构
+## 故障排查
 
-```
-/blog/
-├── api/                    # 后端代码
-│   ├── database/          # SQLite 数据库
-│   ├── uploads/           # 上传的文件
-│   ├── middleware/        # 中间件
-│   ├── routes/            # API 路由
-│   ├── app.ts             # Express 应用
-│   ├── database.ts        # 数据库配置
-│   └── server.ts          # 服务器入口
-├── dist/                  # 前端构建产物
-├── logs/                  # 日志文件
-├── nginx.conf             # Nginx 配置
-├── ecosystem.config.js    # PM2 配置
-└── package.json
-```
+### 首页没变化
 
-### 9. 默认登录信息
+1. 确认线上首页引用的新资产：
+   ```bash
+   curl -sS -L -H 'Cache-Control: no-cache' https://manji.pro/
+   ```
+2. 确认构建资产存在：
+   ```bash
+   ssh root@14.103.45.4 "ls -la /blog/dist/assets | tail"
+   ```
+3. 如果 HTML 已更新但浏览器没变化，强刷新或清缓存。
 
-- 邮箱: wangxun417@foxmail.com
-- 密码: sj2kv1t5
-
-**注意**: 首次登录后请立即修改密码！
-
-### 10. 故障排查
+### API 不通
 
 ```bash
-# 检查应用日志
-pm2 logs blog-server
+curl https://manji.pro/api/health
+ssh root@14.103.45.4 "pm2 logs blog-server --lines 100"
+ssh root@14.103.45.4 "ss -tlnp | grep 3001"
+```
 
-# 检查 Nginx 错误日志
-sudo tail -f /var/log/nginx/error.log
+### 上传失败
 
-# 检查端口占用
-sudo netstat -tlnp | grep 3000
+检查 Nginx 上传限制和目录权限：
 
-# 测试 API 是否运行
-curl http://localhost:3000/api/health
+```bash
+ssh root@14.103.45.4 "grep client_max_body_size /blog/nginx.conf /etc/nginx/sites-available/blog"
+ssh root@14.103.45.4 "ls -ld /blog/api/uploads"
 ```

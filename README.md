@@ -1,33 +1,63 @@
 # Manji Blog
 
-> http://manji.pro/
+> 线上地址：https://manji.pro/
+> 仓库：https://github.com/Manji-i/manji-blog
 
-### 通过 AI coding 搭建的个人博客
-> 支持文章发布、Markdown 编辑、图片上传、分类管理、关于页配置和移动端适配。
+Manji Blog 是一个个人博客 CMS，承载「长文章」和「随想」两条内容主线。前台用于阅读，后台用于写作、发布、配置站点和管理内容。
 
-严格意义讲的话，属于我的第二个 vibe coding 项目，希望跑一遍域名流程。
-用 Trae 开发，火山实例，阿里云域名，火山备案。（也不知道当时怎么想的跑阿里云买域名…）
+## 功能
 
-## 方案选择
-看了一下静态和动态两种博客，其实如果是写东西记录的话，静态比较方便。
-但因为是想跑一遍更复杂的流程，而且不想快速部署在比如 netlify 的域名上，选择了动态。
-
-## 精力耗费
-在整体 UI 设计或者视觉审美上没有花费功夫，整体风格上没有做太多事情。
-主要跑通文章编辑到发布，Markdown 的编辑、预览和效果生成上出现了不少问题,比如转义的问题。
-略微调整页面布局，适配移动端浏览。
-完成跑了下买域名、备案和 DNS 解析，比想象的简单。
+- 前台：首页、文章列表、文章详情、随想、关于页
+- 后台：登录、仪表盘、文章管理、随想管理、分类管理、网站设置
+- 写作：文章和随想都支持 Markdown，文章支持摘要和图片插入
+- 上传：图片上传到后端 `/uploads`
+- 响应式：适配桌面端、移动端、微信/飞书内置浏览器
 
 ## 技术栈
 
-- **前端：** React 18 + TypeScript + Vite + Tailwind CSS
-- **后端：** Node.js + Express + SQLite
-- **部署：** Nginx + PM2
-- **仓库：** https://github.com/Manji-i/manji-blog
+- 前端：React 18 + TypeScript + Vite + Tailwind CSS + React Router + Zustand + Axios
+- 后端：Node.js + Express + SQLite + JWT + Multer
+- 部署：Nginx + PM2，后端用 `tsx` 直接运行 TypeScript
 
-## 功能特性
+## 本地开发
 
-- 前台：首页、文章列表、文章详情、关于页
-- 后台：登录、仪表盘、文章管理、分类管理、站点设置
-- 功能：Markdown 编辑、图片上传、文章摘要、移动端适配
-- 部署：一键部署脚本 `deploy.sh`，已绑定域名 manji.pro
+```bash
+npm install
+npm run dev
+```
+
+- 前端开发服务：http://localhost:5173
+- 后端 API：http://localhost:3001
+- Vite 会把 `/api` 和 `/uploads` 代理到后端
+
+常用命令：
+
+```bash
+npm run client:dev    # 仅启动前端
+npm run server:dev    # 仅启动后端
+npm test              # 安全回归测试
+npm run check         # TypeScript 检查
+npm run build         # 生产构建
+npm run lint          # ESLint
+```
+
+## 部署
+
+日常上线使用本地脚本：
+
+```bash
+bash deploy.local.sh
+```
+
+`deploy.local.sh` 不入 git。它会构建前端、同步 `dist/`、用 `rsync` 同步整个 `api/` 目录，并排除线上数据库和上传文件：
+
+- 排除：`api/database/`
+- 排除：`api/uploads/`
+
+不要用 `deploy.sh` 作为当前真实上线流程；它是公开模板，不代表当前服务器的完整同步策略。
+
+更多运维细节见 [DEPLOY.md](./DEPLOY.md)。
+
+## 版本记录
+
+版本演进和发布记录见 [版本修订.md](./版本修订.md)。每次功能上线或修复发布后，需要同步更新版本记录。
