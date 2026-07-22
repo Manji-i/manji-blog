@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { NextFunction, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -73,7 +74,9 @@ router.post('/', authMiddleware, upload.single('file'), (req: AuthRequest, res) 
 });
 
 // Error handler for multer
-router.use((err: Error, req: AuthRequest, res: any, next: any) => {
+router.use((err: Error, req: AuthRequest, res: Response, next: NextFunction) => {
+  void req;
+  void next;
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       res.status(400).json({ success: false, message: '文件大小超过限制 (最大5MB)' });

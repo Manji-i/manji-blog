@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const db = await getDb();
     const settings = await db.all('SELECT key, value FROM settings');
     
-    const result: Record<string, any> = {};
+    const result: Record<string, unknown> = {};
     for (const setting of settings) {
       // Try to parse JSON values
       try {
@@ -38,7 +38,7 @@ router.get('/:key', async (req, res) => {
     }
     
     // Try to parse JSON value
-    let value: any = setting.value;
+    let value: unknown = setting.value;
     try {
       value = JSON.parse(setting.value);
     } catch {

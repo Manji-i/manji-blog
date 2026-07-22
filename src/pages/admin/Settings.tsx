@@ -58,7 +58,7 @@ export default function Settings() {
       if (res.data.success) {
         setSettings({ ...defaultSettings, ...res.data.data });
       }
-    } catch (error) {
+    } catch {
       toast.error('获取设置失败');
     } finally {
       setLoading(false);
@@ -70,7 +70,7 @@ export default function Settings() {
     try {
       await settingsApi.update(settings);
       toast.success('设置已保存');
-    } catch (error) {
+    } catch {
       toast.error('保存失败');
     } finally {
       setSaving(false);

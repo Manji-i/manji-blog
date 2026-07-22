@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Save, Eye, Image, ArrowLeft, History } from 'lucide-react';
 import { articlesApi, categoriesApi, uploadApi } from '../../lib/api';
@@ -29,7 +29,7 @@ export default function AdminArticleEdit() {
   const [hasDraft, setHasDraft] = useState(false);
 
   // 尝试从 localStorage 加载草稿
-  const loadDraft = () => {
+  const loadDraft = useCallback(() => {
     try {
       const saved = localStorage.getItem(DRAFT_KEY(id));
       if (saved) {
@@ -40,10 +40,10 @@ export default function AdminArticleEdit() {
       console.error('Failed to load draft:', error);
     }
     return null;
-  };
+  }, [id]);
 
   // 保存草稿到 localStorage
-  const saveDraft = () => {
+  const saveDraft = useCallback(() => {
     if (!title && !content) return;
     try {
       const draft = {
@@ -58,7 +58,7 @@ export default function AdminArticleEdit() {
     } catch (error) {
       console.error('Failed to save draft:', error);
     }
-  };
+  }, [categoryId, content, excerpt, id, title]);
 
   // 清除草稿
   const clearDraft = () => {
@@ -81,37 +81,16 @@ export default function AdminArticleEdit() {
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-    if (isEdit) {
-      fetchArticle();
-    } else {
-      // 新建文章时先检查是否有草稿
-      const draft = loadDraft();
-      if (draft) {
-        setHasDraft(true);
-      }
-    }
-  }, [id]);
-
-  // 监听内容变化，自动保存草稿（防抖）
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      saveDraft();
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [title, content, excerpt, categoryId]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await categoriesApi.getAll();
       setCategories(res.data.data);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
-  };
+  }, []);
 
-  const fetchArticle = async () => {
+  const fetchArticle = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     try {
@@ -132,7 +111,28 @@ export default function AdminArticleEdit() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchCategories();
+    if (isEdit) {
+      fetchArticle();
+    } else {
+      // 新建文章时先检查是否有草稿
+      const draft = loadDraft();
+      if (draft) {
+        setHasDraft(true);
+      }
+    }
+  }, [fetchArticle, fetchCategories, isEdit, loadDraft]);
+
+  // 监听内容变化，自动保存草稿（防抖）
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveDraft();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [saveDraft]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

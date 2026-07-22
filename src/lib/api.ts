@@ -90,8 +90,8 @@ export const uploadApi = {
 export const settingsApi = {
   getAll: () => api.get('/settings'),
   getByKey: (key: string) => api.get(`/settings/${key}`),
-  update: (data: Record<string, any>) => api.put('/settings', data),
-  updateByKey: (key: string, value: any) => api.put(`/settings/${key}`, { value }),
+  update: <T extends object>(data: T) => api.put('/settings', data),
+  updateByKey: (key: string, value: unknown) => api.put(`/settings/${key}`, { value }),
 };
 
 // Thoughts API（随想）

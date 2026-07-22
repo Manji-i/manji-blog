@@ -22,8 +22,22 @@ export default function AdminLogin() {
       const { token, user } = res.data.data;
       setAuth(token, user);
       navigate('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || '登录失败');
+    } catch (err: unknown) {
+      const message = (
+        err &&
+        typeof err === 'object' &&
+        'response' in err &&
+        typeof err.response === 'object' &&
+        err.response &&
+        'data' in err.response &&
+        typeof err.response.data === 'object' &&
+        err.response.data &&
+        'message' in err.response.data &&
+        typeof err.response.data.message === 'string'
+      )
+        ? err.response.data.message
+        : '登录失败';
+      setError(message);
     } finally {
       setLoading(false);
     }

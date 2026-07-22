@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Plus, Edit2, Trash2, FolderOpen } from 'lucide-react';
 import { categoriesApi } from '../../lib/api';
 
@@ -68,8 +69,11 @@ export default function AdminCategories() {
     try {
       await categoriesApi.delete(id);
       fetchCategories();
-    } catch (error: any) {
-      alert(error.response?.data?.message || '删除失败');
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error) && typeof error.response?.data?.message === 'string'
+        ? error.response.data.message
+        : '删除失败';
+      alert(message);
     }
   };
 

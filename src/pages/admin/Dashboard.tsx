@@ -28,10 +28,10 @@ export default function AdminDashboard() {
           categoriesApi.getAll(),
         ]);
 
-        const articles = articlesRes.data.data;
+        const articles: Stats['recentArticles'] = articlesRes.data.data;
         const categories = categoriesRes.data.data;
 
-        const totalViews = articles.reduce((sum: number, a: any) => sum + (a.view_count || 0), 0);
+        const totalViews = articles.reduce((sum, article) => sum + (article.view_count || 0), 0);
         const recentArticles = articles.slice(0, 5);
 
         setStats({

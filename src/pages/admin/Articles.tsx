@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Edit2, Trash2, Eye, Calendar } from 'lucide-react';
 import { articlesApi } from '../../lib/api';
@@ -20,11 +20,7 @@ export default function AdminArticles() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
 
-  useEffect(() => {
-    fetchArticles();
-  }, [statusFilter]);
-
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     try {
       const res = await articlesApi.getAdminList({
         status: statusFilter || undefined,
@@ -36,7 +32,11 @@ export default function AdminArticles() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   const handleDelete = async (id: number) => {
     if (!confirm('确定要删除这篇文章吗？')) return;

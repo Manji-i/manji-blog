@@ -170,8 +170,8 @@ async function migrateDatabase() {
   
   try {
     // Check if excerpt column exists
-    const columns = await db.all(`PRAGMA table_info(articles)`);
-    const columnNames = columns.map((col: any) => col.name);
+    const columns = await db.all<{ name: string }[]>(`PRAGMA table_info(articles)`);
+    const columnNames = columns.map((col) => col.name);
     
     if (!columnNames.includes('excerpt')) {
       console.log('Adding excerpt column to articles table...');
