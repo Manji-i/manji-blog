@@ -35,7 +35,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const [articlesRes, thoughtsRes] = await Promise.all([
-          articlesApi.getAll({ limit: 6 }),
+          articlesApi.getAll({ limit: 3 }),
           thoughtsApi.getAll({ limit: 3 }),
         ]);
         setArticles(articlesRes.data.data);
