@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getDb } from '../database.js';
 import { authMiddleware, AuthRequest } from '../middleware/auth.js';
 import { v4 as uuidv4 } from 'uuid';
+import { ARTICLE_LIST_ORDER_BY } from '../articleOrdering.js';
 
 const router = Router();
 
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
       params.push(`%${search}%`, `%${search}%`);
     }
 
-    query += ` ORDER BY COALESCE(a.published_at, a.created_at) DESC LIMIT ? OFFSET ?`;
+    query += ` ${ARTICLE_LIST_ORDER_BY} LIMIT ? OFFSET ?`;
     params.push(Number(limit), offset);
 
     const articles = await db.all(query, params);
@@ -128,7 +129,7 @@ router.get('/admin/list', authMiddleware, async (req: AuthRequest, res) => {
       params.push(status as string);
     }
 
-    query += ` ORDER BY COALESCE(a.published_at, a.created_at) DESC LIMIT ? OFFSET ?`;
+    query += ` ${ARTICLE_LIST_ORDER_BY} LIMIT ? OFFSET ?`;
     params.push(Number(limit), offset);
 
     const articles = await db.all(query, params);

@@ -5,6 +5,7 @@ import { articlesApi, thoughtsApi } from '../lib/api';
 import { formatZhDate } from '../lib/date';
 import { useSettingsStore } from '../store/settingsStore';
 import { ThoughtMarkdown } from '../components/ThoughtMarkdown';
+import { HOME_ARTICLE_LIMIT } from './homeConfig';
 
 interface Article {
   id: number;
@@ -35,7 +36,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const [articlesRes, thoughtsRes] = await Promise.all([
-          articlesApi.getAll({ limit: 3 }),
+          articlesApi.getAll({ limit: HOME_ARTICLE_LIMIT }),
           thoughtsApi.getAll({ limit: 3 }),
         ]);
         setArticles(articlesRes.data.data);
