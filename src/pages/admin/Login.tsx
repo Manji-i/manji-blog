@@ -7,7 +7,7 @@ import { useAuthStore } from '../../store/authStore';
 export default function AdminLogin() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
-  const [email, setEmail] = useState('wangxun417@foxmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -113,15 +113,6 @@ export default function AdminLogin() {
                 )}
               </button>
             </form>
-
-            {/* Hint */}
-            <div className="mt-6 rounded-lg bg-[var(--bg-tertiary)] p-4">
-              <p className="text-xs text-[var(--text-muted)]">
-                <span className="text-[var(--accent-yellow)]">⚠</span> 默认账号: wangxun417@foxmail.com
-                <br />
-                <span className="text-[var(--accent-yellow)]">⚠</span> 默认密码: sj2kv1t5
-              </p>
-            </div>
 
             {/* Back Link */}
             <div className="mt-6 text-center">

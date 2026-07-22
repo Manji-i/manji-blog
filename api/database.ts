@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getAdminSeedConfig } from './adminSeed.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -132,19 +133,16 @@ async function initDatabase() {
     }
   }
 
-  // Insert default admin user (please change password after first login)
-  // Default password: admin123 (please change immediately after first login)
-  // MD5 hash of "admin123" is: 0192023a7bbd73250516f069df18b500
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-  const adminName = process.env.ADMIN_NAME || 'Admin';
-  const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH || '0192023a7bbd73250516f069df18b500';
-  
-  const adminExists = await db.get('SELECT id FROM users WHERE email = ?', [adminEmail]);
-  if (!adminExists) {
-    await db.run(
-      'INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)',
-      [adminEmail, adminPasswordHash, adminName]
-    );
+  // Only seed an administrator when credentials are provided explicitly.
+  const adminSeed = getAdminSeedConfig(process.env);
+  if (adminSeed) {
+    const adminExists = await db.get('SELECT id FROM users WHERE email = ?', [adminSeed.email]);
+    if (!adminExists) {
+      await db.run(
+        'INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)',
+        [adminSeed.email, adminSeed.passwordHash, adminSeed.name]
+      );
+    }
   }
 
   // Insert default categories
